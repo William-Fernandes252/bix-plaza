@@ -1,6 +1,5 @@
 import uuid
 
-
 from django.db import models
 
 
@@ -39,6 +38,8 @@ class Address(models.Model):
         TO = "TO", "Tocantins"
 
     id = models.UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
+    neighborhood = models.CharField(max_length=255, blank=True)
+    number = models.CharField(max_length=10, blank=True)
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     uf = models.CharField(max_length=2, choices=UfChoices.choices)
@@ -52,4 +53,9 @@ class Address(models.Model):
 
     def __str__(self) -> str:
         """Return the string representation of the address."""
-        return self.street
+        if self.neighborhood and self.number:
+            return (
+                f"{self.street}, {self.number} - {self.neighborhood}, "
+                + f"{self.city} - {self.uf}, {self.zip_code}"
+            )
+        return f"{self.street}, {self.city} - {self.uf}, {self.zip_code}"
