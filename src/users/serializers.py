@@ -50,7 +50,7 @@ class AdminOnlyFieldsSerializerMixin:
 
 class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer):
     groups = serializers.SlugRelatedField(  # type: ignore[var-annotated]
-        slug_field="name", many=True, read_only=True
+        slug_field="name", many=True, queryset=Group.objects.all(), read_only=False
     )
 
     class Meta:
@@ -71,7 +71,7 @@ class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer
         admin_only = ("is_superuser", "is_staff")
 
     def create(self, validated_data):
-        group_names = validated_data.pop("groups", models.User.DEFAULT_GROUPS)
+        group_names = validated_data.pop("groups", models.User.get_default_groups())
         groups = Group.objects.filter(name__in=group_names)
         user = models.User.objects.create_user(**validated_data)
         user.groups.set(groups)

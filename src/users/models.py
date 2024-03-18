@@ -1,6 +1,6 @@
 import uuid
 from enum import Enum
-from typing import ClassVar, override
+from typing import ClassVar, Iterable, override
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import Group as AuthGroup
@@ -20,9 +20,10 @@ class Group(Enum):
     This enum is used to define the user groups in the application.
     """
 
-    MANAGER = "manager"
-    EMPLOYEE = "employee"
-    CLIENT = "client"
+    MANAGERS = "managers"
+    EMPLOYEES = "employees"
+    OPERATORS = "operators"
+    CLIENTS = "clients"
 
 
 class User(AbstractUser):
@@ -31,8 +32,6 @@ class User(AbstractUser):
     If adding fields that need to be filled at user signup,
     check forms.SignupForm and forms.SocialSignupForms accordingly.
     """
-
-    DEFAULT_GROUPS: ClassVar[list[Group]] = [Group.CLIENT]
 
     id = UUIDField(primary_key=True, editable=False, default=uuid.uuid4)
     name = CharField(_("Name of User"), blank=True, max_length=255)
@@ -51,11 +50,7 @@ class User(AbstractUser):
     def save(self, *args, **kwargs) -> None:
         super().save(*args, **kwargs)
         if not self.groups.exists():
-            self.groups.set(
-                AuthGroup.objects.filter(
-                    name__in=[group.value for group in self.DEFAULT_GROUPS]
-                )
-            )
+            self.groups.set(self.get_default_groups())
 
     def get_absolute_url(self) -> str:
         """Get URL for user's detail view.
@@ -66,3 +61,14 @@ class User(AbstractUser):
 
         """
         return reverse("user-detail", kwargs={"pk": self.pk})
+
+    @staticmethod
+    def get_default_groups() -> Iterable[AuthGroup]:
+        """Get the default user groups.
+
+        Returns
+        -------
+            Iterable[Group]: Iterable of groups.
+
+        """
+        return AuthGroup.objects.filter(name__in=[group.value for group in Group])

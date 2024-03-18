@@ -70,7 +70,7 @@ THIRD_PARTY_APPS: list[str] = [
     "rest_framework_simplejwt",
 ] + (["debug_toolbar"] if DEBUG else [])
 
-LOCAL_APPS: list[str] = ["users", "addresses"]
+LOCAL_APPS: list[str] = ["users", "addresses", "hotels"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
