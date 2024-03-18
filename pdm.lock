@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:102878baf31ef3c2d6af3f2f715c93bf02be37f5dd26dfcda5f3e4b5d40d1b30"
+content_hash = "sha256:cb43c9fd4cff351905a6cff20436193eec772b7a3c2927a5b84ce709dde523bb"
 
 [[package]]
 name = "amqp"
@@ -515,6 +515,19 @@ dependencies = [
 ]
 files = [
     {file = "drf-access-policy-1.5.0.tar.gz", hash = "sha256:12c6a14182208d40544a2fd6f065db73ba6f60b3d127a929260e80dd192b8cbf"},
+]
+
+[[package]]
+name = "drf-extensions"
+version = "0.7.1"
+summary = "Extensions for Django REST Framework"
+groups = ["default"]
+dependencies = [
+    "djangorestframework>=3.9.3",
+]
+files = [
+    {file = "drf-extensions-0.7.1.tar.gz", hash = "sha256:90abfc11a2221e8daf4cd54457e41ed38cd71134678de9622e806193db027db1"},
+    {file = "drf_extensions-0.7.1-py2.py3-none-any.whl", hash = "sha256:007910437e64aa1d5ad6fc47266a4ac4280e31761e6458eb30fcac7494ac7d4e"},
 ]
 
 [[package]]
