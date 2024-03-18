@@ -14,6 +14,7 @@ class HotelViewSet(AccessViewSetMixin, DetailSerializerMixin, viewsets.ModelView
     """ViewSet for the Hotel class."""
 
     queryset = models.Hotel.objects.all()
+    queryset_detail = models.Hotel.objects.prefetch_related("rooms")
     serializer_class = serializers.HotelListSerializer
     serializer_detail_class = serializers.HotelDetailSerializer
     access_policy = permissions.HotelAccessPolicy
