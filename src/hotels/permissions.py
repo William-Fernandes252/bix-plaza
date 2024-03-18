@@ -92,7 +92,7 @@ class RoomAccessPolicy(HotelAccessPolicy):
             ],
             "principal": ["authenticated"],
             "effect": "allow",
-            "condition": ["admin", "user_must_be:owner"],
+            "condition": ["user_must_be:owner"],
         },
         {
             "action": [
