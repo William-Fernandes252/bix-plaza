@@ -1,4 +1,5 @@
 import uuid
+from datetime import date
 from typing import override
 
 from django.core.exceptions import ValidationError
@@ -8,6 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 from phonenumber_field.modelfields import PhoneNumberField
 
+from bookings.models import Booking
+from hotels.querysets import RoomQuerySet
 from users.models import Group
 
 
@@ -54,7 +57,7 @@ class Hotel(TimeStampedModel, models.Model):
         return reverse("hotel-detail", kwargs={"pk": self.pk})
 
 
-class Room(TimeStampedModel, models.Model):
+class Room(TimeStampedModel, models.Model):  # type: ignore[django-manager-missing]
     """Model definition for Room."""
 
     class RoomType(models.TextChoices):
@@ -75,6 +78,8 @@ class Room(TimeStampedModel, models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     occupied = models.BooleanField(default=False)
 
+    objects = RoomQuerySet.as_manager()
+
     class Meta:
         """Meta definition for Room."""
 
@@ -88,3 +93,28 @@ class Room(TimeStampedModel, models.Model):
     @override
     def get_absolute_url(self):
         return reverse("room-detail", kwargs={"pk": self.pk})
+
+    def check_availability(self, start: date, end: date) -> bool:
+        """Check if the room is available in the given period."""
+        return not self.bookings.filter(
+            (
+                models.Q(start__lte=start, end__gte=start)
+                | models.Q(start__lte=end, end__gte=end)
+            )
+            & models.Q(
+                status__in=[
+                    Booking.StatusChoices.CONFIRMED,
+                    Booking.StatusChoices.CHECKED_IN,
+                ]
+            )
+        ).exists()
+
+    def check_in(self):
+        """Check in the room."""
+        self.occupied = True
+        self.save()
+
+    def check_out(self):
+        """Check out the room."""
+        self.occupied = False
+        self.save()

@@ -73,9 +73,10 @@ THIRD_PARTY_APPS: list[str] = [
     "django_celery_results",
     "rest_framework",
     "rest_framework_simplejwt",
+    "anymail",
 ] + (["debug_toolbar"] if DEBUG else [])
 
-LOCAL_APPS: list[str] = ["users", "addresses", "hotels"]
+LOCAL_APPS: list[str] = ["users", "addresses", "hotels", "bookings"]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
@@ -99,11 +100,24 @@ SITE_ID = 1
 
 # Email
 
-EMAIL_BACKEND = env(
-    "EMAIL_BACKEND",
-    default="django.core.mail.backends.smtp.EmailBackend",
-    cast=str,
+EMAIL_BACKEND = (
+    "django.core.mail.backends.smtp.EmailBackend"
+    if DEBUG
+    else "anymail.backends.sendgrid.EmailBackend"
 )
+
+EMAIL_HOST = env("EMAIL_HOST", default="mailpit")
+
+SERVER_EMAIL = env("SERVER_EMAIL", default="root@localhost")
+
+EMAIL_PORT = 1025
+
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="bookings@bix.com")
+
+ANYMAIL = {
+    "SENDGRID_API_KEY": env("SENDGRID_API_KEY", default=""),
+    "SENDGRID_API_URL": env("SENDGRID_API_URL", default="https://api.sendgrid.com/v3/"),
+}
 
 
 # Templates
@@ -207,6 +221,16 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
+CELERY_BEAT_SCHEDULE = {
+    "cancel_unchecked_bookings_every_1_hour": {
+        "task": "bookings.tasks.cancel_unchecked_bookings",
+        "schedule": 60 * 60,
+    },
+    "retry_send_confirmation_email_for_pending_bookings_every_5_minutes": {
+        "task": "retry_send_confirmation_email_for_pending_bookings",
+        "schedule": 60 * 5,
+    },
+}
 
 
 # Rest Framework
@@ -221,3 +245,10 @@ REST_FRAMEWORK = {
         "rest_framework.filters.OrderingFilter",
     ],
 }
+
+
+# Bookings
+
+BOOKINGS_CONFIRMATION_EMAIL_TEMPLATE_ID = env(
+    "BOOKINGS_CONFIRMATION_EMAIL_TEMPLATE_ID", default=""
+)
