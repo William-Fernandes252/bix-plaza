@@ -22,13 +22,17 @@ class UserManager(DjangoUserManager["User"]):
         return user
 
     @override
-    def create_user(self, email: str, password: str | None = None, **extra_fields):  # type: ignore[override] # noqa: E501
+    def create_user(
+        self, email: str, password: str | None = None, **extra_fields
+    ):  # type: ignore[override]
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
         return self._create_user(email, password, **extra_fields)
 
     @override
-    def create_superuser(self, email: str, password: str | None = None, **extra_fields):  # type: ignore[override] # noqa: E501
+    def create_superuser(
+        self, email: str, password: str | None = None, **extra_fields
+    ):  # type: ignore[override]
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -40,3 +44,8 @@ class UserManager(DjangoUserManager["User"]):
             raise ValueError(msg)
 
         return self._create_user(email, password, **extra_fields)
+
+    @staticmethod
+    def is_manager(user: "User") -> bool:
+        """Check if the user is a manager."""
+        return user.groups.filter(name="managers").exists()
