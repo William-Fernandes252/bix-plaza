@@ -186,6 +186,11 @@ LOGIN_URL = "/accounts/login/"
 
 LOGIN_REDIRECT_URL = "/"
 
+SIMPLE_JWT = {
+    "TOKEN_OBTAIN_SERIALIZER": "users.serializers.UserTokenObtainPairSerializer",
+    "USER_ID_CLAIM": "id",
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

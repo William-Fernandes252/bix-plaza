@@ -1,5 +1,8 @@
+from typing import override
+
 from django.contrib.auth.models import Group
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from users import models
 
@@ -76,3 +79,19 @@ class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer
         user = models.User.objects.create_user(**validated_data)
         user.groups.set(groups)
         return user
+
+
+class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """User token obtain pair serializer."""
+
+    @override
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token["phone_number"] = str(user.phone_number)
+        token["email"] = user.email
+        token["name"] = user.name
+        token["groups"] = list(user.groups.values_list("name", flat=True))
+
+        return token

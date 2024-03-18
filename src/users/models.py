@@ -26,7 +26,7 @@ class Group(Enum):
     CLIENTS = "clients"
 
 
-class User(AbstractUser):
+class User(AbstractUser):  # type: ignore[django-manager-missing]
     """Default custom user model for Back-end of the Bix Plaza project.
 
     If adding fields that need to be filled at user signup,
