@@ -1,6 +1,7 @@
 from typing import override
 
 from django.contrib.auth.models import Group
+from django.db.models import QuerySet
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -53,7 +54,11 @@ class AdminOnlyFieldsSerializerMixin:
 
 class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer):
     groups = serializers.SlugRelatedField(  # type: ignore[var-annotated]
-        slug_field="name", many=True, queryset=Group.objects.all(), read_only=False
+        slug_field="name",
+        many=True,
+        queryset=Group.objects.all(),
+        read_only=False,
+        required=False,
     )
 
     class Meta:
@@ -67,15 +72,22 @@ class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer
             "date_joined",
             "groups",
         )
-        read_only_fields = ("id", "date_joined")
+        read_only_fields = (
+            "id",
+            "date_joined",
+            "is_active",
+            "is_staff",
+            "is_superuser",
+        )
         extra_kwargs = {
             "password": {"write_only": True},
         }
         admin_only = ("is_superuser", "is_staff")
 
     def create(self, validated_data):
-        group_names = validated_data.pop("groups", models.User.get_default_groups())
-        groups = Group.objects.filter(name__in=group_names)
+        groups: QuerySet | None = validated_data.pop("groups")
+        if not groups or len(groups) == 0:
+            groups = models.User.get_default_groups()
         user = models.User.objects.create_user(**validated_data)
         user.groups.set(groups)
         return user

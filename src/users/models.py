@@ -49,8 +49,7 @@ class User(AbstractUser):  # type: ignore[django-manager-missing]
     @override
     def save(self, *args, **kwargs) -> None:
         super().save(*args, **kwargs)
-        if not self.groups.exists():
-            self.groups.set(self.get_default_groups())
+        self.groups.add(*self.get_default_groups())
 
     def get_absolute_url(self) -> str:
         """Get URL for user's detail view.
@@ -71,4 +70,4 @@ class User(AbstractUser):  # type: ignore[django-manager-missing]
             Iterable[Group]: Iterable of groups.
 
         """
-        return AuthGroup.objects.filter(name__in=[group.value for group in Group])
+        return AuthGroup.objects.filter(name__in=[Group.CLIENTS.value])
