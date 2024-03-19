@@ -16,6 +16,7 @@ class UserAccessPolicy(AccessPolicy):
                 "destroy",
                 "list",
                 "retrieve",
+                "me",
             ],
             "principal": "authenticated",
             "effect": "allow",
