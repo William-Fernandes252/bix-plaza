@@ -10,7 +10,6 @@ class UserAccessPolicy(AccessPolicy):
         },
         {
             "action": [
-                "create",
                 "update",
                 "partial_update",
                 "destroy",
