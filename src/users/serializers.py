@@ -66,6 +66,7 @@ class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer
         fields = (
             "id",
             "email",
+            "name",
             "is_active",
             "is_staff",
             "is_superuser",
@@ -74,7 +75,6 @@ class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer
         )
         read_only_fields = (
             "id",
-            "date_joined",
             "is_active",
             "is_staff",
             "is_superuser",
@@ -82,7 +82,7 @@ class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer
         extra_kwargs = {
             "password": {"write_only": True},
         }
-        admin_only = ("is_superuser", "is_staff")
+        admin_only = ("is_superuser", "is_staff", "is_active")
 
     def create(self, validated_data):
         groups: QuerySet | None = validated_data.pop("groups")
