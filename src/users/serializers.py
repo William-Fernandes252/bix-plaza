@@ -72,6 +72,7 @@ class UserSerializer(AdminOnlyFieldsSerializerMixin, serializers.ModelSerializer
             "is_superuser",
             "date_joined",
             "groups",
+            "phone_number",
         )
         read_only_fields = (
             "id",
