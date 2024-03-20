@@ -13,11 +13,15 @@ class UserAccessPolicy(AccessPolicy):
                 "update",
                 "partial_update",
                 "destroy",
-                "list",
                 "retrieve",
                 "me",
             ],
             "principal": "authenticated",
+            "effect": "allow",
+        },
+        {
+            "action": ["list"],
+            "principal": ["admin", "staff"],
             "effect": "allow",
         },
     ]
