@@ -24,6 +24,7 @@ dependencies = [
     "django-anymail[sendgrid]>=10.3",
     "django-fsm>=2.8.1",
     "setuptools>=69.2.0",
+    "pytest==7.1.3",
 ]
 requires-python = "==3.12.*"
 readme = "README.md"
@@ -36,7 +37,7 @@ distribution = false
 [tool.pdm.dev-dependencies]
 dev = [
     "mypy>=1.7.1",
-    "pytest>=8.1.1",
+    "pytest<8,>=7.1.3",
     "pytest-cov>=4.1.0",
     "pytest-django>=4.8.0",
     "Faker>=24.2.0",
@@ -47,15 +48,37 @@ dev = [
     "djangorestframework-stubs[compatible-mypy]>=3.14.5",
     "ruff>=0.3.3",
     "django-debug-toolbar>=4.3.0",
+    "pytest-xdist>=3.5.0",
+    "pytest-drf>=1.1.3",
+    "pytest-camel-collect>=1.0.2",
+    "sqlalchemy>=2.0.28",
+]
+
+[tool.pdm.scripts]
+"test" = "pytest --cov=src"
+"test:watch" = "watchfiles 'pytest --cov=src' src tests"
+
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING",
+    "if __name__ == .__main__.:"
 ]
 
 
 [tool.pytest.ini_options]
-addopts = "--cov=src --no-migrations --no-cov-on-fail"
+addopts = "--no-migrations --no-cov-on-fail"
 filterwarnings = ["error", "ignore::DeprecationWarning"]
 pythonpath = ["src", "."]
-DJANGO_SETTINGS_MODULE = "config.settings"
-
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_classes = ["Test-*", "Describe-*", "Context-*", "With-*", "Without-*", "For-*", "When-*", "If-*", "Case-*"]
+python_functions = ["test_*", "it_*", "its_*"]
 
 [tool.ruff]
 line-length = 88
