@@ -8,6 +8,8 @@ from addresses.serializers import AddressSerializer
 
 
 class AddressViewSet(AccessViewSetMixin, ModelViewSet):
+    """List and manage the hotels addresses (admin only)."""
+
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
     access_policy = AddressAccessPolicy

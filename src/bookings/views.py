@@ -9,7 +9,7 @@ from bookings import models, permissions, serializers
 
 
 class BookingViewSet(AccessViewSetMixin, DetailSerializerMixin, ModelViewSet):
-    """Booking view set."""
+    """Book and manage reservations on hotel rooms."""
 
     queryset = models.Booking.objects.all()
     queryset_detail = models.Booking.objects.prefetch_related("room")

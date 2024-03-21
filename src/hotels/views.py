@@ -14,7 +14,7 @@ from hotels import filters, models, permissions, serializers
 
 
 class HotelViewSet(AccessViewSetMixin, DetailSerializerMixin, viewsets.ModelViewSet):
-    """ViewSet for the Hotel class."""
+    """List and manage the available hotels."""
 
     queryset = models.Hotel.objects.all()
     queryset_detail = models.Hotel.objects.prefetch_related("rooms")
@@ -36,7 +36,7 @@ class HotelViewSet(AccessViewSetMixin, DetailSerializerMixin, viewsets.ModelView
 
 
 class RoomViewSet(AccessViewSetMixin, viewsets.ModelViewSet):
-    """ViewSet for the Room class."""
+    """List and manage the available rooms."""
 
     queryset = models.Room.objects.all()
     serializer_class = serializers.RoomSerializer

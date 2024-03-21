@@ -20,7 +20,13 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 from config.router import router
 
 urlpatterns = [
@@ -28,6 +34,9 @@ urlpatterns = [
     path("", include(router.urls)),
     path("token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path("token/refresh/", TokenRefreshView.as_view(), name="token-refresh"),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path("schema/redoc/", SpectacularRedocView.as_view(), name="redoc"),
+    path("swagger/", SpectacularSwaggerView.as_view(), name="swagger-ui"),
 ] + (
     [
         path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),

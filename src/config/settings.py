@@ -74,6 +74,7 @@ THIRD_PARTY_APPS: list[str] = [
     "rest_framework",
     "rest_framework_simplejwt",
     "anymail",
+    "drf_spectacular",
 ] + (["debug_toolbar"] if DEBUG else [])
 
 LOCAL_APPS: list[str] = ["users", "addresses", "hotels", "bookings"]
@@ -261,6 +262,16 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "PAGE_SIZE": 100,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
+# Documentation
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Bix Plaza",
+    "DESCRIPTION": "REST API for Bix Plaza, a hotel booking platform.",
+    "VERSION": "1.0.0",
 }
 
 
