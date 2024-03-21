@@ -32,7 +32,10 @@ ADMINS = ["William Fernandes <william.winchester1967@gmail.com>"]
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = env(
+    "SECRET_KEY",
+    default="django-insecure-wrmzj#y4o_-pn2!95wn+8(txrv5r9i$mho(%6*o)b4s4=_k31p",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
