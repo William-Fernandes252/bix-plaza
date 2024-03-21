@@ -2,6 +2,17 @@
 
 REST API for hotel management and reservations. It was developed during a technical test for a selection process from BIX Tecnologia.
 
+![API Overview](./screenshots/main.png)
+
+## About
+
+As optional and custom features, I added:
+
+- 80% of test coverage;
+- Documentation, including Swagger UI and OpenAPI 3 schema generation;
+- Caching with Redis;
+- CI workflow to execute the project test suites in the cloud on pushes and pull-requests.
+
 ## Requirements
 
 - Docker and Docker Compose (installation guide [here](https://docs.docker.com/compose/install/))
