@@ -111,10 +111,14 @@ class Room(TimeStampedModel, models.Model):  # type: ignore[django-manager-missi
 
     def check_in(self):
         """Check in the room."""
+        if self.occupied:
+            raise ValidationError("The room is already occupied.")
         self.occupied = True
         self.save()
 
     def check_out(self):
         """Check out the room."""
+        if not self.occupied:
+            raise ValidationError("The room is not occupied.")
         self.occupied = False
         self.save()
