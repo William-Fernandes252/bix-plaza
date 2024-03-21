@@ -44,7 +44,7 @@ DEBUG = env("DEBUG")
 # Hosting policy
 
 ALLOWED_HOSTS = env(
-    "ALLOWED_HOSTS", default=["*"], cast=lambda v: [s.strip() for s in v.split(",")]
+    "ALLOWED_HOSTS", default="*", cast=lambda v: [s.strip() for s in v.split(",")]
 )
 
 INTERNAL_IPS = [
