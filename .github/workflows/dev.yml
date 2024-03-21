@@ -16,6 +16,7 @@ jobs:
         python-version: [3.12.2]
     env:
       READ_DOT_ENV_FILE: 0
+      DEBUG: 1
 
     steps:
     - uses: actions/checkout@v3
