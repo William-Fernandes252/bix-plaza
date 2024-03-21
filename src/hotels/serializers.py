@@ -1,3 +1,5 @@
+from typing import Any, override
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework_extensions.serializers import PartialUpdateSerializerMixin
@@ -33,7 +35,7 @@ class RoomSerializer(PartialUpdateSerializerMixin, serializers.ModelSerializer):
 class HotelListSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=False)
     url = serializers.HyperlinkedIdentityField("hotel-detail")
-    rooms = RoomSerializer(many=True, write_only=True)
+    rooms = RoomSerializer(many=True, write_only=True, required=False)
     manager = serializers.PrimaryKeyRelatedField(
         required=True,
         queryset=get_user_model().objects.all(),
@@ -58,6 +60,25 @@ class HotelListSerializer(serializers.ModelSerializer):
             "owner",
         ]
         read_only_fields = ["id"]
+
+    @override
+    def create(self, validated_data: dict[str, Any]) -> models.Hotel:
+        rooms_data = validated_data.pop("rooms", [])
+
+        address_data = validated_data.pop("address")
+        zip_code = address_data.pop("zip_code")
+
+        hotel = models.Hotel.objects.create(
+            **validated_data,
+            address=Address.objects.get_or_create(
+                zip_code=zip_code, defaults=address_data
+            )[0],
+        )
+
+        for room_data in rooms_data:
+            models.Room.objects.create(hotel=hotel, **room_data)
+
+        return hotel
 
 
 class HotelDetailSerializer(
