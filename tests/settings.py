@@ -10,3 +10,10 @@ DATABASES = {
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 
 SIMPLE_JWT["USER_AUTHENTICATION_RULE"] = lambda *args: True  # type: ignore # noqa: F405
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": "/var/tmp/django_cache",
+    }
+}

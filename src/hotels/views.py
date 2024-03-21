@@ -1,6 +1,9 @@
 from typing import Any, override
 
 from django.db import transaction
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from rest_access_policy import AccessViewSetMixin
 from rest_framework import viewsets
 from rest_framework.request import Request
@@ -24,6 +27,12 @@ class HotelViewSet(AccessViewSetMixin, DetailSerializerMixin, viewsets.ModelView
     @override
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         return super().create(request, *args, **kwargs)
+
+    @method_decorator(cache_page(60 * 60 * 2))
+    @method_decorator(vary_on_cookie)
+    @override
+    def list(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        return super().list(request, *args, **kwargs)
 
 
 class RoomViewSet(AccessViewSetMixin, viewsets.ModelViewSet):
